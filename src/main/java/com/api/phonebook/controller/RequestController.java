@@ -123,6 +123,25 @@ public class RequestController {
 
     }
 
+    @ApiOperation(value = "Search a contact by name or email address (10 results per page by default)")
+    @GetMapping("/contacts/{name}")
+    public ResponseEntity<?>searchOldContacts(@PathVariable String name, @PageableDefault(page = 0, size = 10) Pageable pageRequest) {
+        try {
+            Page<Contact> requiredContacts = contactService.findContact(name, pageRequest);
+            List<Contact> requiredContactList = requiredContacts.getContent();
+            return new ResponseEntity<>(requiredContactList, HttpStatus.OK);
+
+        } catch (PhoneBookException exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+
+        }
+        catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);  
+        }
+        
+    }
+
+    @ApiOperation(value = "Let you Delete a Contact")
     @DeleteMapping("/contacts/{email}")
     public ResponseEntity<?> removeCourse(@PathVariable String email) {
         try {

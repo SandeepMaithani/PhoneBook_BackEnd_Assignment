@@ -10,12 +10,12 @@ import io.swagger.annotations.ApiModelProperty;
 @Document
 public class Contact {
    
-    @ApiModelProperty(required = true, notes = "Email Address of the Contact")
+    @ApiModelProperty(notes = "Email Address of the Contact", required = true)
     @NotNull(message = "Name cannot be Empty")
     @Id
     private String email;
 
-    @ApiModelProperty(required = true, notes = "Name of the Contact")
+    @ApiModelProperty(notes = "Name of the Contact", required = true)
     @NotNull(message = "Name cannot be Empty")
     private String name;
 

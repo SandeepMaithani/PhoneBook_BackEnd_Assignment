@@ -13,7 +13,7 @@ public class PhoneBookException extends Exception {
         super(message);
     }
 
-    public static String NotFoundException(String id) {
+    public static String NotFoundException() {
         int statusCode = HttpStatus.NOT_FOUND.value();
         return String.valueOf(statusCode);
     }

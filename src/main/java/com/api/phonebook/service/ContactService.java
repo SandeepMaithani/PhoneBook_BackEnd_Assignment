@@ -17,7 +17,7 @@ public interface ContactService {
     public Contact createContact(Contact contact) throws InvalidDetailsException, ConstraintViolationException;
     public Contact removeContact(String email) throws PhoneBookException, InvalidDetailsException;
     public void updateContact(HashMap<String, String>newValues, String email) throws PhoneBookException, InvalidDetailsException;
-    public Contact searchContact(String name, String email);
+    public Page<Contact> findContact(String name, Pageable pageRequest) throws PhoneBookException;
 
     
 }

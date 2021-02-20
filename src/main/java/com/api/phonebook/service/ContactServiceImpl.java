@@ -1,6 +1,7 @@
 package com.api.phonebook.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -22,29 +23,26 @@ public class ContactServiceImpl implements ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
-    public static boolean isNullOrEmpty(String string) 
-	{ 	
-		if (string == null || string.isEmpty()) {
+    public static boolean isNullOrEmpty(String string) {
+        if (string == null || string.isEmpty()) {
             return true;
-        } 
-		else {
+        } else {
             return false;
         }
-	} 
+    }
 
-    public static boolean isValidEmail(String email) 
-    { 
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$"; 
-                              
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z"
+                + "A-Z]{2,7}$";
+
         Pattern pattern = Pattern.compile(emailRegex);
 
         if (email == null) {
-            return false; 
-        }
-        else {
+            return false;
+        } else {
             return pattern.matcher(email).matches();
-        } 
-    } 
+        }
+    }
 
     @Override
     public Page<Contact> getAllContacts(Pageable pageRequest) {
@@ -53,13 +51,13 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact createContact(Contact contact) throws InvalidDetailsException, ConstraintViolationException {
-        if(isValidEmail(contact.getemail()) != true) {
+        if (isValidEmail(contact.getemail()) != true) {
             throw new InvalidDetailsException(InvalidDetailsException.InvalidEmailAddress());
         }
 
         String phoneNumber = contact.getphoneNumber();
 
-        if(isNullOrEmpty(phoneNumber) == true) {
+        if (isNullOrEmpty(phoneNumber) == true) {
             contact.setphoneNumber("");
         }
 
@@ -70,8 +68,8 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact removeContact(String email) throws PhoneBookException, InvalidDetailsException {
-        
-        if(isValidEmail(email) != true) {
+
+        if (isValidEmail(email) != true) {
             throw new InvalidDetailsException(InvalidDetailsException.InvalidEmailAddress());
         }
 
@@ -82,14 +80,15 @@ public class ContactServiceImpl implements ContactService {
             return removedCourse.get();
 
         } else {
-            throw new PhoneBookException(PhoneBookException.NotFoundException(email));
+            throw new PhoneBookException(PhoneBookException.NotFoundException());
         }
     }
 
     @Override
-    public void updateContact(HashMap<String, String> newValues, String email) throws PhoneBookException, InvalidDetailsException {
+    public void updateContact(HashMap<String, String> newValues, String email)
+            throws PhoneBookException, InvalidDetailsException {
 
-        if(isValidEmail(email) != true) {
+        if (isValidEmail(email) != true) {
             throw new InvalidDetailsException(InvalidDetailsException.InvalidEmailAddress());
         }
 
@@ -99,7 +98,7 @@ public class ContactServiceImpl implements ContactService {
 
             String newName = newValues.get("name");
             String newPhoneNumber = newValues.get("phoneNumber");
-           
+
             Contact oldContactToUpdate = requiredContactWithId.get();
 
             newName = isNullOrEmpty(newName) ? oldContactToUpdate.getName() : newName;
@@ -110,14 +109,20 @@ public class ContactServiceImpl implements ContactService {
 
             this.contactRepository.save(oldContactToUpdate);
         } else {
-            throw new PhoneBookException(PhoneBookException.NotFoundException(email));
+            throw new PhoneBookException(PhoneBookException.NotFoundException());
         }
 
     }
 
     @Override
-    public Contact searchContact(String name, String email) {
-        return null;
+    public Page<Contact> findContact(String name, Pageable pageRequest) throws PhoneBookException {
+        List<Contact> requiredContacts = contactRepository.findByName(name);
+
+        if (requiredContacts.size() == 0) {
+            throw new PhoneBookException(PhoneBookException.NotFoundException());
+        } else {
+            return contactRepository.findByName(name, pageRequest);
+        }
     }
     
 }
