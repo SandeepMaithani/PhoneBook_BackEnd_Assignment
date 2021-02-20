@@ -13,9 +13,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>phonebook</name>
 	<description>A phonebook service which will store the following information about a contact</description>
-	<properties>
+	<!-- <properties>
 		<java.version>15</java.version>
-	</properties>
+	</properties> -->
 	<dependencies>
 
 		<dependency>
