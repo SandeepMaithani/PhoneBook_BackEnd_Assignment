@@ -1,7 +1,6 @@
 package com.api.phonebook.service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -13,6 +12,8 @@ import com.api.phonebook.exception.PhoneBookException;
 import com.api.phonebook.repository.ContactRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,8 +47,8 @@ public class ContactServiceImpl implements ContactService {
     } 
 
     @Override
-    public List<Contact> getAllContacts() {
-        return null;
+    public Page<Contact> getAllContacts(Pageable pageRequest) {
+        return contactRepository.findAll(pageRequest);
     }
 
     @Override
